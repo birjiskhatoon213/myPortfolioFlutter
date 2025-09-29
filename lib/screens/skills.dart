@@ -11,18 +11,14 @@ class Skills extends StatefulWidget {
 
 class _SkillsState extends State<Skills> {
   // Holds the current text entered in the search bar.
-  // It is converted to lowercase for case-insensitive searching later.
   String searchQuery = "";
 
-  // Tracks the currently selected category tab (e.g., "Languages", "Tools").
-  // Initialized to "All" to show all skills by default.
+  // Tracks the currently selected category tab.
   String selectedTab = "All"; // ✅ default tab
 
   // ✅ Data structure to hold all skill information, grouped by category.
-  // Each category maps to a list of skill objects (Map<String, dynamic>).
   final Map<String, List<Map<String, dynamic>>> skillsData = {
     "Languages": [
-      // Each skill object contains the name, experience, and an associated icon.
       {"name": "HTML", "exp": "4 years experience", "icon": Icons.language},
       {"name": "CSS", "exp": "4 years experience", "icon": Icons.style},
       {"name": "TypeScript", "exp": "4 years experience", "icon": Icons.code},
@@ -37,7 +33,6 @@ class _SkillsState extends State<Skills> {
     "Tools": [
       {"name": "Android Studio", "exp": "Just started", "icon": Icons.android},
       {"name": "Git", "exp": "3+ years experience", "icon": Icons.merge_type},
-      // ... (rest of the Tools data)
       {
         "name": "Swagger",
         "exp": "2+ years experience",
@@ -63,42 +58,148 @@ class _SkillsState extends State<Skills> {
 
   // List of category names used to build the horizontal tab bar.
   final List<String> tabs = [
-    "All", // Must be the first element to match the initial selectedTab value.
+    "All",
     "Languages",
     "Frameworks",
     "Tools",
     "Platforms",
   ];
 
+  // Helper method to apply filtering logic and return the filtered data structure
+  Map<String, List<Map<String, dynamic>>> _getFilteredSkills() {
+    final Map<String, List<Map<String, dynamic>>> filteredSkillsByCategories =
+        {};
+
+    skillsData.entries.forEach((entry) {
+      final category = entry.key;
+
+      // 1. Apply Tab Filter: Skip if category doesn't match the selected tab
+      if (selectedTab != "All" && selectedTab != category) {
+        return;
+      }
+
+      // 2. Apply Search Filter:
+      final items = entry.value.where((skill) {
+        if (searchQuery.isEmpty) return true;
+        // Check both skill name and category name against the search query
+        return skill["name"]!.toLowerCase().contains(searchQuery) ||
+            category.toLowerCase().contains(searchQuery);
+      }).toList();
+
+      // Only include the category in the result if it has matching items
+      if (items.isNotEmpty) {
+        filteredSkillsByCategories[category] = items;
+      }
+    });
+
+    return filteredSkillsByCategories;
+  }
+
   @override
   Widget build(BuildContext context) {
+    // 🚀 NEW LOGIC START: Calculate filtered skills and total count
+    final filteredSkillsByCategories = _getFilteredSkills();
+    // Sum the length of all lists in the map to get the total count of visible skills.
+    final totalFilteredSkills = filteredSkillsByCategories.values.fold<int>(
+      0,
+      (sum, list) => sum + list.length,
+    );
+
+    // Widget to be placed in the Expanded area (either skill list or 'not found' message)
+    Widget skillContent;
+
+    if (totalFilteredSkills == 0) {
+      // Show 'No Skills Found' message
+      skillContent = const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.sentiment_dissatisfied, size: 60, color: Colors.grey),
+            SizedBox(height: 10),
+            Text(
+              "No skills found for your search.",
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.grey,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 5),
+            Text(
+              "Try a different search term or tab.",
+              style: TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // Show the filtered skill cards
+      skillContent = SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          // Use the pre-filtered map entries
+          children: filteredSkillsByCategories.entries.map((entry) {
+            final category = entry.key;
+            final items = entry.value;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Category Header
+                Text(
+                  category.toUpperCase(),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: items.map((skill) {
+                    return _buildSkillCard(
+                      skill["name"]!,
+                      skill["exp"]!,
+                      skill["icon"],
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 20),
+              ],
+            );
+          }).toList(),
+        ),
+      );
+    }
+    // 🚀 NEW LOGIC END
+
     return Scaffold(
-      // Sets the overall background of the screen to white.
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Skills"),
+        titleTextStyle: const TextStyle(
+          fontFamily: 'Poppins',
+          fontWeight: FontWeight.w400,
+          fontSize: 30,
+        ),
         centerTitle: true,
         backgroundColor: Colors.white,
-        elevation: 0, // Removes the shadow under the AppBar.
+        elevation: 0,
+        surfaceTintColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // ===============================================================
-            // ✅ Tabs Section
-            // ===============================================================
+            // Tabs Section (Unchanged)
             SingleChildScrollView(
-              // Allows the tabs to be scrolled horizontally if they exceed screen width.
               scrollDirection: Axis.horizontal,
               child: Row(
-                // Maps the 'tabs' list into a list of interactive tab widgets.
                 children: tabs.map((tab) {
                   final isSelected = selectedTab == tab;
                   return GestureDetector(
-                    // onTap logic handles switching the active tab.
                     onTap: () {
-                      // Calls setState to rebuild the widget tree with the new selectedTab.
                       setState(() {
                         selectedTab = tab;
                       });
@@ -110,7 +211,6 @@ class _SkillsState extends State<Skills> {
                         vertical: 10,
                       ),
                       decoration: BoxDecoration(
-                        // Changes color based on selection status.
                         color: isSelected ? Colors.black : Colors.grey.shade200,
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -118,7 +218,6 @@ class _SkillsState extends State<Skills> {
                         tab,
                         style: TextStyle(
                           color: isSelected ? Colors.white : Colors.black,
-                          // Makes the text bold when selected.
                           fontWeight: isSelected
                               ? FontWeight.bold
                               : FontWeight.normal,
@@ -131,109 +230,35 @@ class _SkillsState extends State<Skills> {
             ),
             const SizedBox(height: 16),
 
-            // ===============================================================
-            // ✅ Search Bar Section
-            // ===============================================================
+            // Search Bar Section (Unchanged)
             TextField(
               decoration: InputDecoration(
                 hintText: "Search skills...",
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                    30,
-                  ), // Rounded corners for a pill shape.
-                  borderSide: BorderSide.none, // Removes the border line.
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide.none,
                 ),
                 fillColor: Colors.grey.shade200,
-                filled: true, // Enables the background color (fillColor).
+                filled: true,
               ),
-              // Called every time the text field content changes.
               onChanged: (val) {
-                // Updates the searchQuery state variable, triggering a rebuild.
                 setState(() {
-                  // Stores the input in lowercase for case-insensitive filtering.
                   searchQuery = val.toLowerCase();
                 });
               },
             ),
             const SizedBox(height: 16),
 
-            // ===============================================================
-            // ✅ Scrollable Skills List Section (Filtered Content)
-            // ===============================================================
-            Expanded(
-              // Ensures the list takes up the remaining vertical space.
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  // Iterates over all skill categories (skillsData map entries).
-                  children: skillsData.entries.map((entry) {
-                    final category = entry.key;
-
-                    // 1. ✅ Tab filter: Skips rendering the category if it doesn't match the selected tab.
-                    if (selectedTab != "All" && selectedTab != category) {
-                      return const SizedBox(); // Renders an empty widget if filtered out.
-                    }
-
-                    // 2. ✅ Search filter: Filters the skills within the current category.
-                    final items = entry.value.where((skill) {
-                      // If search is empty, show all skills in this category.
-                      if (searchQuery.isEmpty) return true;
-
-                      // Check if the skill name contains the search query.
-                      return skill["name"]!.toLowerCase().contains(
-                            searchQuery,
-                          ) ||
-                          // Also check if the category name contains the search query.
-                          category.toLowerCase().contains(searchQuery);
-                    }).toList();
-
-                    // If all skills in this category were filtered out by the search, skip rendering the category header.
-                    if (items.isEmpty) return const SizedBox();
-
-                    // Builds the category header and the skill cards.
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Category Header
-                        Text(
-                          category.toUpperCase(),
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        // Wrap widget allows skill cards to flow onto the next line responsively.
-                        Wrap(
-                          spacing: 12, // Horizontal space between cards.
-                          runSpacing:
-                              12, // Vertical space between lines of cards.
-                          // Maps the filtered 'items' into _buildSkillCard widgets.
-                          children: items.map((skill) {
-                            return _buildSkillCard(
-                              skill["name"]!,
-                              skill["exp"]!,
-                              skill["icon"],
-                            );
-                          }).toList(),
-                        ),
-                        const SizedBox(height: 20),
-                      ],
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
+            // Expanded section now uses the determined skillContent widget
+            Expanded(child: skillContent),
           ],
         ),
       ),
     );
   }
 
-  // ===============================================================
-  // ✅ Skill Card Widget Definition
-  // ===============================================================
+  // Skill Card Widget Definition (Unchanged)
   Widget _buildSkillCard(String title, String exp, IconData icon) {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -241,7 +266,6 @@ class _SkillsState extends State<Skills> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
-          // Creates a subtle shadow effect for depth.
           BoxShadow(
             color: Colors.grey,
             blurRadius: 6,
@@ -249,9 +273,7 @@ class _SkillsState extends State<Skills> {
           ),
         ],
       ),
-      // Margin to create space around the card, separate from the Wrap's spacing.
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      // Fixed width for the card (you may need to change this for responsiveness).
       width: 150,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -264,8 +286,6 @@ class _SkillsState extends State<Skills> {
             exp,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-            // If the content is large, this text might wrap, making the card taller.
-            // If you want fixed height, you would need to set maxLines and overflow properties here.
           ),
         ],
       ),

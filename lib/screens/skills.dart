@@ -109,7 +109,7 @@ class _SkillsState extends State<Skills> {
     Widget skillContent;
 
     if (totalFilteredSkills == 0) {
-      // Show 'No Skills Found' message
+      // Show 'No Skills Found' message in center
       skillContent = const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -106,7 +106,7 @@ const int mainScreenIndex = 0;
 const int projectsIndex = 1;
 
 // Define a maximum width for web/desktop viewing to prevent "zoomed" look.
-const double _kMaxWebWidth = 800.0;
+const double _kMaxWebWidth = 810.0;
 
 // LandingPage manages bottom navigation and switching between pages
 class LandingPage extends StatefulWidget {

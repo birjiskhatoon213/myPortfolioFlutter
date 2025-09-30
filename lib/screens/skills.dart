@@ -189,7 +189,7 @@ class _SkillsState extends State<Skills> {
         surfaceTintColor: Colors.white,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(left: 16,top: 16,right: 16),
         child: Column(
           children: [
             // Tabs Section (Unchanged)

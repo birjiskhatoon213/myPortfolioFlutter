@@ -106,7 +106,7 @@ const int mainScreenIndex = 0;
 const int projectsIndex = 1;
 
 // Define a maximum width for web/desktop viewing to prevent "zoomed" look.
-const double _kMaxWebWidth = 810.0;
+// const double _kMaxWebWidth = 810.0;
 
 // LandingPage manages bottom navigation and switching between pages
 class LandingPage extends StatefulWidget {
@@ -149,7 +149,7 @@ class _LandingPageState extends State<LandingPage> {
       body: Center(
         child: ConstrainedBox(
           // Limits the width of the body content
-          constraints: const BoxConstraints(maxWidth: _kMaxWebWidth),
+          constraints: const BoxConstraints(),
           child: IndexedStack(index: _currentIndex, children: _pages),
         ),
       ),
@@ -160,7 +160,7 @@ class _LandingPageState extends State<LandingPage> {
         // but the content inside will be constrained.
         // child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: _kMaxWebWidth),
+            constraints: const BoxConstraints(),
             child: CustomBottomNavBar(
               currentIndex: _currentIndex,
               onTap: _setIndex,

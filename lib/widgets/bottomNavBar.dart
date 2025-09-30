@@ -15,7 +15,7 @@ class CustomBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width; // get screen width
     return Container(
-      height: 60, // Fixed height
+      height: 80, // Fixed height
       child: Container(
         decoration: BoxDecoration(
           // borderRadius: BorderRadius.circular(50),
@@ -30,50 +30,54 @@ class CustomBottomNavBar extends StatelessWidget {
             ),
           ],
         ),
+        // margin: const EdgeInsets.only(bottom: 10),
         // margin: const EdgeInsets.symmetric(
-          // horizontal: 40,
-          // vertical: 10,
+        // horizontal: 40,
+        // vertical: 10,
         // ), // margin gives pill effect instead of full width
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            NavBarItem(
-              // icon: Icons.person,
-              label: 'Birjis',
-              isActive: currentIndex == 0,
-              onTap: () => onTap(0),
-            ),
-            NavBarItem(
-              // icon: Icons.folder_open,
-              label: 'Projects',
-              isActive: currentIndex == 1,
-              onTap: () => onTap(1),
-            ),
-            NavBarItem(
-              // icon: Icons.star_border,
-              label: 'Skills',
-              isActive: currentIndex == 2,
-              onTap: () => onTap(2),
-            ),
-            NavBarItem(
-              // icon: Icons.mail,
-              label: 'Contact',
-              isActive: currentIndex == 3,
-              onTap: () => onTap(3),
-            ),
-            // NavBarItem(
-            //   icon: Icons.work,
-            //   label: 'Experience',
-            //   isActive: currentIndex == 4,
-            //   onTap: () => onTap(4),
-            // ),
-            // NavBarItem(
-            //   icon: Icons.download,
-            //   label: 'Downloads',
-            //   isActive: currentIndex == 5,
-            //   onTap: () => onTap(5),
-            // ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              NavBarItem(
+                icon: Icons.person,
+                label: 'Birjis',
+                isActive: currentIndex == 0,
+                onTap: () => onTap(0),
+              ),
+              NavBarItem(
+                icon: Icons.folder_open,
+                label: 'Projects',
+                isActive: currentIndex == 1,
+                onTap: () => onTap(1),
+              ),
+              NavBarItem(
+                icon: Icons.star_border,
+                label: 'Skills',
+                isActive: currentIndex == 2,
+                onTap: () => onTap(2),
+              ),
+              NavBarItem(
+                icon: Icons.mail,
+                label: 'Contact',
+                isActive: currentIndex == 3,
+                onTap: () => onTap(3),
+              ),
+              // NavBarItem(
+              //   icon: Icons.work,
+              //   label: 'Experience',
+              //   isActive: currentIndex == 4,
+              //   onTap: () => onTap(4),
+              // ),
+              // NavBarItem(
+              //   icon: Icons.download,
+              //   label: 'Downloads',
+              //   isActive: currentIndex == 5,
+              //   onTap: () => onTap(5),
+              // ),
+            ],
+          ),
         ),
       ),
     );
@@ -82,14 +86,14 @@ class CustomBottomNavBar extends StatelessWidget {
 
 // Individual navigation item
 class NavBarItem extends StatelessWidget {
-  // final IconData icon;
+  final IconData icon;
   final String label;
   final bool isActive; // To color active tab
   final VoidCallback? onTap; // Detect tap
 
   const NavBarItem({
     super.key,
-    // required this.icon,
+    required this.icon,
     required this.label,
     this.isActive = false,
     this.onTap,
@@ -104,7 +108,7 @@ class NavBarItem extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          // Icon(icon, color: color, size: 24), // Icon for tab
+          Icon(icon, color: color, size: 20), // Icon for tab
           Text(
             label,
             style: TextStyle(

@@ -188,72 +188,93 @@ class _SkillsState extends State<Skills> {
         elevation: 0,
         surfaceTintColor: Colors.white,
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 16,top: 16,right: 16),
-        child: Column(
-          children: [
-            // Tabs Section (Unchanged)
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: tabs.map((tab) {
-                  final isSelected = selectedTab == tab;
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedTab = tab;
-                      });
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(right: 12),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isSelected ? Colors.black : Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        tab,
-                        style: TextStyle(
-                          color: isSelected ? Colors.white : Colors.black,
-                          fontWeight: isSelected
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                        ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final screenWidth = constraints.maxWidth;
+
+          return SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth > 800 ? 120 : 16,
+              vertical: 16,
+            ),
+            child: ConstrainedBox(
+              // Makes sure the content takes at least full height of the screen
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Tabs Section
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: tabs.map((tab) {
+                          final isSelected = selectedTab == tab;
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedTab = tab;
+                              });
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(right: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? Colors.black
+                                    : Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                tab,
+                                style: TextStyle(
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
                       ),
                     ),
-                  );
-                }).toList(),
-              ),
-            ),
-            const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-            // Search Bar Section (Unchanged)
-            TextField(
-              decoration: InputDecoration(
-                hintText: "Search skills...",
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
+                    // Search Bar
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: "Search skills...",
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        fillColor: Colors.grey.shade200,
+                        filled: true,
+                      ),
+                      onChanged: (val) {
+                        setState(() {
+                          searchQuery = val.toLowerCase();
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Skills content
+                    // Remove Expanded and let scroll happen naturally
+                    skillContent,
+                  ],
                 ),
-                fillColor: Colors.grey.shade200,
-                filled: true,
               ),
-              onChanged: (val) {
-                setState(() {
-                  searchQuery = val.toLowerCase();
-                });
-              },
             ),
-            const SizedBox(height: 16),
-
-            // Expanded section now uses the determined skillContent widget
-            Expanded(child: skillContent),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/splashScreen.dart'; // LandingPage manages bottom nav and routing
+import 'routes.dart';
 
 void main() {
   // runApp is the entry point of a Flutter app
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Poppins', // Global font
       ),
       home: const SplashScreen(), // First screen to show
+      routes: {...appRoutes},
     );
   }
 }
-

@@ -17,6 +17,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white, // Set background color of the screen
       body: SafeArea(
@@ -24,6 +25,9 @@ class _MainScreenState extends State<MainScreen> {
         child: SingleChildScrollView(
           // Makes the screen scrollable in case of overflow
           child: Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: screenWidth > 800 ? 120 : 0, // Only for large screens
+            ),
             padding: const EdgeInsets.symmetric(
               horizontal: 24.0,
               vertical: 32.0,
@@ -41,7 +45,9 @@ class _MainScreenState extends State<MainScreen> {
                     fontSize: 30,
                   ),
                 ),
-                const SizedBox(height: 8), // Spacing between heading and subheading
+                const SizedBox(
+                  height: 8,
+                ), // Spacing between heading and subheading
                 // Subheading
                 const Text(
                   "Welcome to my Portfolio.",
@@ -83,7 +89,12 @@ class IntroBox extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.0), // Rounded corners
           boxShadow: [
             BoxShadow(
-              color: const Color.fromRGBO(0, 0, 0, 0.2), // Shadow color with opacity
+              color: const Color.fromRGBO(
+                0,
+                0,
+                0,
+                0.2,
+              ), // Shadow color with opacity
               spreadRadius: 2, // How much the shadow spreads
               blurRadius: 8, // Blur effect for shadow
               offset: const Offset(0, 4), // Shadow position (x, y)
@@ -91,7 +102,8 @@ class IntroBox extends StatelessWidget {
           ],
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // Align children to start
+          crossAxisAlignment:
+              CrossAxisAlignment.start, // Align children to start
           children: [
             // Row containing profile image and name/designation
             Row(
@@ -105,7 +117,9 @@ class IntroBox extends StatelessWidget {
                     shape: BoxShape.circle, // Circular image
                     // NOTE: Ensure you have this image in your assets/images folder and pubspec.yaml
                     image: const DecorationImage(
-                      image: AssetImage('images/birjisLP.JPG'), // Profile image from assets
+                      image: AssetImage(
+                        'images/birjisLP.JPG',
+                      ), // Profile image from assets
                       fit: BoxFit.cover, // Cover entire circle
                     ),
                   ),
@@ -113,7 +127,9 @@ class IntroBox extends StatelessWidget {
                 const SizedBox(width: 20), // Space between image and text
                 // Name & Designation Column
                 Padding(
-                  padding: const EdgeInsets.only(top: 20.0), // Align text vertically with image
+                  padding: const EdgeInsets.only(
+                    top: 20.0,
+                  ), // Align text vertically with image
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
@@ -140,7 +156,9 @@ class IntroBox extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20), // Space between profile row and introduction heading
+            const SizedBox(
+              height: 20,
+            ), // Space between profile row and introduction heading
             // Introduction Heading
             const Text(
               "Introduction",
@@ -154,10 +172,10 @@ class IntroBox extends StatelessWidget {
             // Paragraph describing the person
             const Text(
               "I am a passionate Flutter developer with over 4 years of experience. "
-                  "I enjoy building beautiful and responsive mobile applications. "
-                  "My focus is on writing clean, maintainable code and following best practices. "
-                  "I am constantly learning new technologies and improving my skills. "
-                  "I am excited to contribute to innovative projects and collaborate with teams.",
+              "I enjoy building beautiful and responsive mobile applications. "
+              "My focus is on writing clean, maintainable code and following best practices. "
+              "I am constantly learning new technologies and improving my skills. "
+              "I am excited to contribute to innovative projects and collaborate with teams.",
               style: TextStyle(
                 fontFamily: 'Poppins',
                 fontSize: 16,
@@ -182,13 +200,59 @@ class PortfolioSections extends StatelessWidget {
   Widget build(BuildContext context) {
     // List of portfolio cards with title, icon, color, AND NAV INDEX (Projects index is 1)
     final List<Map<String, dynamic>> sections = [
-      {"title": "Projects", "icon": Icons.folder_open, "color": Colors.blue, "navIndex": 1},
-      {"title": "Skills", "icon": Icons.star, "color": Colors.orange, "navIndex": 2},
-      {"title": "Contact", "icon": Icons.mail, "color": Colors.green, "navIndex": 3},
-      {"title": "Experience", "icon": Icons.work, "color": Colors.teal, "navIndex": 4}, // Placeholder
-      {"title": "Downloads", "icon": Icons.download, "color": Colors.purple, "navIndex": 5},
+      {
+        "title": "Projects",
+        "icon": Icons.folder_open,
+        "color": Colors.blue,
+        "navIndex": 1,
+      },
+      {
+        "title": "Skills",
+        "icon": Icons.star,
+        "color": Colors.orange,
+        "navIndex": 2,
+      },
+      {
+        "title": "Contact",
+        "icon": Icons.mail,
+        "color": Colors.green,
+        "navIndex": 3,
+      },
+      {
+        "title": "Experience",
+        "icon": Icons.work,
+        "color": Colors.teal,
+        "navIndex": 4,
+      }, // Placeholder
+      {
+        "title": "Downloads",
+        "icon": Icons.download,
+        "color": Colors.purple,
+        "navIndex": 5,
+      },
     ];
+    double screenWidth = MediaQuery.of(context).size.width;
 
+    // Define the desired width based on the condition
+    // final double widgetWidth = screenWidth > 800
+    //     ? (screenWidth / 2) -
+    //           160 // Half width on screens > 600, minus 160
+    //     : double.infinity; // Full width on screens <= 600
+
+    double getCardWidth(double width){
+      if (width < 600){
+        return double.infinity;
+      }
+      else if (width < 800){
+          return (screenWidth/2) - 40;
+      }
+      else if (width < 1200){
+         return (screenWidth/2) - 155;
+      }
+      else {
+        return (screenWidth/3) - 110;
+      }
+    }
     return Wrap(
       spacing: 20, // Horizontal spacing between boxes
       runSpacing: 20, // Vertical spacing when boxes wrap to next line
@@ -203,9 +267,7 @@ class PortfolioSections extends StatelessWidget {
             }
           },
           child: SizedBox(
-            width: MediaQuery.of(context).size.width > 600
-                ? (MediaQuery.of(context).size.width / 2) - 40 // Half width on large screens
-                : double.infinity, // Full width on small screens
+            width: getCardWidth(screenWidth),
             child: Container(
               padding: const EdgeInsets.all(20.0), // Padding inside each card
               decoration: BoxDecoration(
@@ -221,9 +283,14 @@ class PortfolioSections extends StatelessWidget {
                 ],
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start, // Align content to start
+                crossAxisAlignment:
+                    CrossAxisAlignment.start, // Align content to start
                 children: [
-                  Icon(section["icon"], size: 40, color: section["color"]), // Icon for the section
+                  Icon(
+                    section["icon"],
+                    size: 40,
+                    color: section["color"],
+                  ), // Icon for the section
                   const SizedBox(height: 10), // Space between icon and title
                   Text(
                     section["title"], // Section title
@@ -233,10 +300,12 @@ class PortfolioSections extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 6), // Space between title and description
+                  const SizedBox(
+                    height: 6,
+                  ), // Space between title and description
                   const Text(
                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-                        "Phasellus vehicula justo eget diam posuere sollicitudin.",
+                    "Phasellus vehicula justo eget diam posuere sollicitudin.",
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 14,

@@ -31,6 +31,10 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_svg: ^2.0.10+1
+  textf: ^0.6.3
+  easy_rich_text: '^2.0.0'
+  flutter_staggered_animations: ^1.0.0
+  visibility_detector: ^0.4.0+2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -62,6 +66,10 @@ flutter:
   assets:
      - images/landingPageGirl.svg
      - images/birjisLP.JPG
+     - images/projectPH.jpg
+     - images/project1.jpg
+     - images/project2.jpg
+     - images/project3.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

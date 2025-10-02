@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_grid_list/responsive_grid_list.dart';
 
-// The main widget for the Skills screen, making it a StatefulWidget to manage
-// internal state like selected tabs and search queries.
+// The main widget for the Skills screen
 class Skills extends StatefulWidget {
   const Skills({super.key});
 
@@ -10,14 +10,11 @@ class Skills extends StatefulWidget {
 }
 
 class _SkillsState extends State<Skills> {
-  // Holds the current text entered in the search bar.
+  // ... (existing state and data structure)
   String searchQuery = "";
-
-  // Tracks the currently selected category tab.
-  String selectedTab = "All"; // ✅ default tab
-
-  // ✅ Data structure to hold all skill information, grouped by category.
-  final Map<String, List<Map<String, dynamic>>> skillsData = {
+  String selectedTab = "All";
+  final Map<String, List<Map<String, dynamic>>> skillsData = const {
+    // Making data const as good practice if possible
     "Languages": [
       {"name": "HTML", "exp": "4 years experience", "icon": Icons.language},
       {"name": "CSS", "exp": "4 years experience", "icon": Icons.style},
@@ -56,8 +53,7 @@ class _SkillsState extends State<Skills> {
     ],
   };
 
-  // List of category names used to build the horizontal tab bar.
-  final List<String> tabs = [
+  final List<String> tabs = const [
     "All",
     "Languages",
     "Frameworks",
@@ -65,28 +61,22 @@ class _SkillsState extends State<Skills> {
     "Platforms",
   ];
 
-  // Helper method to apply filtering logic and return the filtered data structure
   Map<String, List<Map<String, dynamic>>> _getFilteredSkills() {
-    final Map<String, List<Map<String, dynamic>>> filteredSkillsByCategories =
-        {};
+    final Map<String, List<Map<String, dynamic>>> filteredSkillsByCategories = {};
 
     skillsData.entries.forEach((entry) {
       final category = entry.key;
 
-      // 1. Apply Tab Filter: Skip if category doesn't match the selected tab
       if (selectedTab != "All" && selectedTab != category) {
         return;
       }
 
-      // 2. Apply Search Filter:
       final items = entry.value.where((skill) {
         if (searchQuery.isEmpty) return true;
-        // Check both skill name and category name against the search query
         return skill["name"]!.toLowerCase().contains(searchQuery) ||
             category.toLowerCase().contains(searchQuery);
       }).toList();
 
-      // Only include the category in the result if it has matching items
       if (items.isNotEmpty) {
         filteredSkillsByCategories[category] = items;
       }
@@ -95,85 +85,103 @@ class _SkillsState extends State<Skills> {
     return filteredSkillsByCategories;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // 🚀 NEW LOGIC START: Calculate filtered skills and total count
-    final filteredSkillsByCategories = _getFilteredSkills();
-    // Sum the length of all lists in the map to get the total count of visible skills.
-    final totalFilteredSkills = filteredSkillsByCategories.values.fold<int>(
-      0,
-      (sum, list) => sum + list.length,
-    );
+  // --- Sticky Header Implementation ---
+  SliverPersistentHeader _buildStickyHeader({required double screenWidth}) {
+    // 1. Calculate horizontal padding based on screen size (same as main body padding)
+    final double horizontalPadding = screenWidth > 800 ? 120 : 16;
 
-    // Widget to be placed in the Expanded area (either skill list or 'not found' message)
-    Widget skillContent;
-
-    if (totalFilteredSkills == 0) {
-      // Show 'No Skills Found' message in center
-      skillContent = const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.sentiment_dissatisfied, size: 60, color: Colors.grey),
-            SizedBox(height: 10),
-            Text(
-              "No skills found for your search.",
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey,
-                fontWeight: FontWeight.w600,
+    // 2. Define the main content widget for the header (Tabs + Search)
+    final Widget headerContent = Container(
+      // The color of the header when it's sticky (typically matches Scaffold background)
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: 16,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Essential for column inside a min-height header
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Tabs Section (NEW: Centered on wide screens)
+          Center(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: tabs.map((tab) {
+                  final isSelected = selectedTab == tab;
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedTab = tab;
+                      });
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isSelected ? Colors.black : Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        tab,
+                        style: TextStyle(
+                          color: isSelected ? Colors.white : Colors.black,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
               ),
             ),
-            SizedBox(height: 5),
-            Text(
-              "Try a different search term or tab.",
-              style: TextStyle(fontSize: 14, color: Colors.grey),
+          ),
+          const SizedBox(height: 16),
+
+          // Search Bar
+          TextField(
+            decoration: InputDecoration(
+              hintText: "Search skills...",
+              prefixIcon: const Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide.none,
+              ),
+              fillColor: Colors.grey.shade200,
+              filled: true,
             ),
-          ],
-        ),
-      );
-    } else {
-      // Show the filtered skill cards
-      skillContent = SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          // Use the pre-filtered map entries
-          children: filteredSkillsByCategories.entries.map((entry) {
-            final category = entry.key;
-            final items = entry.value;
+            onChanged: (val) {
+              setState(() {
+                searchQuery = val.toLowerCase();
+              });
+            },
+          ),
+        ],
+      ),
+    );
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Category Header
-                Text(
-                  category.toUpperCase(),
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: items.map((skill) {
-                    return _buildSkillCard(
-                      skill["name"]!,
-                      skill["exp"]!,
-                      skill["icon"],
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(height: 20),
-              ],
-            );
-          }).toList(),
-        ),
-      );
-    }
-    // 🚀 NEW LOGIC END
+    // 3. Return the SliverPersistentHeader delegate
+    return SliverPersistentHeader(
+      pinned: true, // Key property: makes the header sticky
+      delegate: _SliverAppBarDelegate(
+        minHeight: 160.0, // Minimum height when sticky
+        maxHeight: 160.0, // Maximum height (should equal min if not collapsing)
+        child: headerContent,
+      ),
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    final filteredSkillsByCategories = _getFilteredSkills();
+    final totalFilteredSkills = filteredSkillsByCategories.values.fold<int>(
+      0,
+          (sum, list) => sum + list.length,
+    );
+
+    // Main build structure now uses LayoutBuilder and CustomScrollView
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -191,88 +199,91 @@ class _SkillsState extends State<Skills> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           final screenWidth = constraints.maxWidth;
+          final double horizontalPadding = screenWidth > 800 ? 120 : 16;
 
-          return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: screenWidth > 800 ? 120 : 16,
-              vertical: 16,
-            ),
-            child: ConstrainedBox(
-              // Makes sure the content takes at least full height of the screen
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: IntrinsicHeight(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Tabs Section
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: tabs.map((tab) {
-                          final isSelected = selectedTab == tab;
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedTab = tab;
-                              });
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.only(right: 12),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? Colors.black
-                                    : Colors.grey.shade200,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                tab,
-                                style: TextStyle(
-                                  color: isSelected
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontWeight: isSelected
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                ),
+          return CustomScrollView(
+            slivers: <Widget>[
+              // 1. Sticky Header (Tabs + Search)
+              _buildStickyHeader(screenWidth: screenWidth),
+
+              // 2. Main Skills Content (SliverList)
+              SliverPadding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: horizontalPadding,
+                  vertical: 24, // Added top vertical padding below the sticky header
+                ),
+                sliver: totalFilteredSkills == 0
+                    ? SliverFillRemaining(
+                  hasScrollBody: false, // Don't allow it to scroll if content is short
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.sentiment_dissatisfied, size: 60, color: Colors.grey),
+                        SizedBox(height: 10),
+                        Text(
+                          "No skills found for your search.",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          "Try a different search term or tab.",
+                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+                    : SliverList(
+                  delegate: SliverChildListDelegate(
+                    filteredSkillsByCategories.entries.map((entry) {
+                      final category = entry.key;
+                      final items = entry.value;
+
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Category Header
+                            Text(
+                              category.toUpperCase(),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
+                            const SizedBox(height: 12),
 
-                    // Search Bar
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: "Search skills...",
-                        prefixIcon: const Icon(Icons.search),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide.none,
+                            // Responsive Grid for Cards
+                            ResponsiveGridList(
+                              listViewBuilderOptions:  ListViewBuilderOptions(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                              ),
+                              minItemWidth: 160,
+                              horizontalGridSpacing: 16,
+                              verticalGridSpacing: 16,
+                              children: items.map((skill) {
+                                return _buildSkillCard(
+                                  skill["name"]!,
+                                  skill["exp"]!,
+                                  skill["icon"]!,
+                                );
+                              }).toList(),
+                            ),
+                          ],
                         ),
-                        fillColor: Colors.grey.shade200,
-                        filled: true,
-                      ),
-                      onChanged: (val) {
-                        setState(() {
-                          searchQuery = val.toLowerCase();
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Skills content
-                    // Remove Expanded and let scroll happen naturally
-                    skillContent,
-                  ],
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
-            ),
+            ],
           );
         },
       ),
@@ -288,20 +299,22 @@ class _SkillsState extends State<Skills> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey,
+            color: Colors.grey.withOpacity(0.3),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),
         ],
       ),
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      width: 150,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(icon, size: 40, color: Colors.blue),
           const SizedBox(height: 8),
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 4),
           Text(
             exp,
@@ -311,5 +324,38 @@ class _SkillsState extends State<Skills> {
         ],
       ),
     );
+  }
+}
+
+// --- SliverPersistentHeader Delegate ---
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate({
+    required this.minHeight,
+    required this.maxHeight,
+    required this.child,
+  });
+
+  final double minHeight;
+  final double maxHeight;
+  final Widget child;
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  double get maxExtent => maxHeight;
+
+  // The main widget to build, which is our sticky header content
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return SizedBox.expand(child: child);
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return maxHeight != oldDelegate.maxHeight ||
+        minHeight != oldDelegate.minHeight ||
+        child != oldDelegate.child;
   }
 }

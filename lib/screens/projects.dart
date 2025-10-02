@@ -1,9 +1,10 @@
 // projects.dart (Native Solution - Full Screen Responsive)
 
 import 'package:flutter/material.dart';
-import 'package:textf/textf.dart';
+// NOTE: Make sure to add this dependency to your pubspec.yaml:
+// responsive_grid_list: ^1.4.1
+import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:easy_rich_text/easy_rich_text.dart';
-// import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 // ===========================================
 // 1. DATA STRUCTURE
@@ -11,7 +12,7 @@ import 'package:easy_rich_text/easy_rich_text.dart';
 class Project {
   final String title;
   final String description;
-  final String imagePath;
+  final String imagePath; // This now holds the URL
   final String detailsRoute;
 
   Project({
@@ -22,87 +23,101 @@ class Project {
   });
 }
 
-// Your list of 8 projects (using placeholder data)
+// Your list of 11 projects (using placeholder data)
 final List<Project> projects = [
   Project(
     title: "Medcall UI/UX Case Study",
     description:
-        "Medcall a one-stop healthcare app in India. Book health check packages, schedule lab tests, consult with doctors virtually, and order medicines for same-day delivery, all in one place.",
-    imagePath: 'images/project1.jpg',
+    "Medcall a one-stop healthcare app in India. Book health check packages, schedule lab tests, consult with doctors virtually, and order medicines for same-day delivery, all in one place.",
+    // --- CHANGED TO NETWORK URL ---
+    imagePath: 'https://picsum.photos/300/600?random=1',
     detailsRoute: '/Project1',
   ),
   Project(
     title: "Aignit - Instant AI Answer Analysis",
     description:
-        "Aignit's algorithm evaluates your answers and offers actionable feedback. A structured feedback designed to enhance your answer writing across multiple domains.",
-    imagePath: 'images/project2.jpg',
+    "Aignit's algorithm offers actionable feedback to enhance your answer writing across multiple domains.",
+    // --- CHANGED TO NETWORK URL ---
+    imagePath: 'https://picsum.photos/300/600?random=2',
     detailsRoute: '/Project1',
   ),
   Project(
     title: "My time @Cars24",
     description:
-        "Founded in 2015, CARS24 is a leading AutoTech company streamlining and revolutionising the sale, purchase, and financing of pre-owned cars in India, Australia, Thailand, and UAE.",
-    imagePath: 'images/project3.jpg',
+    "CARS24 is a leading AutoTech company streamlining and revolutionising the sale, purchase, and financing of pre-owned cars in India.",
+    // --- CHANGED TO NETWORK URL ---
+    imagePath: 'https://picsum.photos/300/600?random=3',
     detailsRoute: '/p3_details',
   ),
   Project(
     title: "Grabon 2.0 - Logo, Branding and  Identity",
     description:
-        "Grabon is a trusted brand and a pioneer in affiliate e-commerce scene in India. We are known for maintaining high quality standards through our unique user interface and user experience.",
-    imagePath: 'images/project1.jpg',
+    "Grabon is a trusted brand and a pioneer in affiliate e-commerce scene in India, known for high quality standards.",
+    // --- CHANGED TO NETWORK URL ---
+    imagePath: 'https://picsum.photos/300/600?random=4',
     detailsRoute: '/p4_details',
   ),
   Project(
     title: "Grabon App - Redesign",
     description:
-        "Grabon is a trusted brand and a pioneer in affiliate e-commerce scene in India. We are known for maintaining high quality standards through our unique user interface and user experience.",
-    imagePath: 'images/project2.jpg',
+    "Grabon is a trusted brand and a pioneer in affiliate e-commerce scene in India. We are known for maintaining high quality standards.",
+    // --- CHANGED TO NETWORK URL ---
+    imagePath: 'https://picsum.photos/300/600?random=5',
     detailsRoute: '/p5_details',
   ),
   Project(
     title: "OLA Rebranding & Product design (Concept)",
     description:
-        "Grabon is a trusted brand and a pioneer in affiliate e-commerce scene in India. We are known for maintaining high quality standards through our unique user interface and user experience.",
-    imagePath: 'images/project3.jpg',
+    "Concept design exploring rebranding possibilities and product redesign for the OLA transportation platform.",
+    // --- CHANGED TO NETWORK URL ---
+    imagePath: 'https://picsum.photos/300/600?random=6',
     detailsRoute: '/p6_details',
   ),
   Project(
     title: "Cita EV Charger App",
     description:
-        "EV Car Charge Management Application, An application to manage EV charge status & setup",
-    imagePath: 'images/project1.jpg',
+    "EV Car Charge Management Application, An application to manage EV charge status & setup.",
+    // --- CHANGED TO NETWORK URL ---
+    imagePath: 'https://picsum.photos/300/600?random=7',
     detailsRoute: '/p7_details',
   ),
   Project(
     title: "Cita Smart Cameras App",
     description:
-        "Surveillance Camera Management Application, Application to manage Surveillance Cameras on mobile",
-    imagePath: 'images/project2.jpg',
+    "Surveillance Camera Management Application, Application to manage Surveillance Cameras on mobile.",
+    // --- CHANGED TO NETWORK URL ---
+    imagePath: 'https://picsum.photos/300/600?random=8',
     detailsRoute: '/p8_details',
   ),
   Project(
     title: "TracePe Application",
     description:
-        "Tracepe is the best subscription management platform which helps you manage all subscriptions, cancel subscriptions and track subscriptions, all at one place.",
-    imagePath: 'images/project3.jpg',
+    "Tracepe is the best subscription management platform which helps you manage all subscriptions, cancel subscriptions and track subscriptions, all at one place.",
+    // --- CHANGED TO NETWORK URL ---
+    imagePath: 'https://picsum.photos/300/600?random=9',
     detailsRoute: '/p9_details',
   ),
   Project(
     title: "Skoolcom Application",
     description:
-        "Grabon is a trusted brand and a pioneer in affiliate e-commerce scene in India. We are known for maintaining high quality standards through our unique user interface and user experience.",
-    imagePath: 'images/project1.jpg',
+    "Skoolcom is a platform for managing school communications, attendance, and academic records digitally.",
+    // --- CHANGED TO NETWORK URL ---
+    imagePath: 'https://picsum.photos/300/600?random=10',
     detailsRoute: '/p8_details',
   ),
   Project(
     title: "Cita EV Charge Station Management Dashboard",
     description:
-        "EV Station Management Dashboard Application (Internal Tool) Application to manage EV Station managers and staff and diagnose and setup EV stations.",
-    imagePath: 'images/project2.jpg',
+    "EV Station Management Dashboard Application (Internal Tool) Application to manage EV Station managers and staff and diagnose and setup EV stations.",
+    // --- CHANGED TO NETWORK URL ---
+    imagePath: 'https://picsum.photos/300/600?random=11',
     detailsRoute: '/p8_details',
   ),
 ];
 
+// ===========================================
+// MAIN SCREEN WIDGET
+// ===========================================
 class Projects extends StatefulWidget {
   const Projects({super.key});
 
@@ -111,23 +126,39 @@ class Projects extends StatefulWidget {
 }
 
 class _ProjectsState extends State<Projects> {
+  // Helper method to determine the horizontal margin based on screen width
+  double _getMargin(double width) {
+    if (width < 800) {
+      return 0; // No margin on smaller screens
+    } else if (width < 1200) {
+      return width * 0.1; // 10% margin on tablets
+    } else {
+      return width * 0.15; // 15% margin on large screens
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
+        // Ensures content respects system overlays
         child: SingleChildScrollView(
+          // Allows the entire page content to scroll
           child: Container(
+            // Apply responsive horizontal margin
             margin: EdgeInsets.symmetric(
-              horizontal: screenWidth > 800 ? 120 : 0, // Only for large screens
+              horizontal: _getMargin(screenWidth),
             ),
-            child: Column(
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start, // Align content to the left
               children: <Widget>[
-                const SizedBox(height: 100),
-                Container(child: ProjectMainDescription()),
-                const SizedBox(height: 100),
-                Container(child: projectCards()),
+                SizedBox(height: 100), // Top spacing
+                ProjectMainDescription(),
+                SizedBox(height: 100), // Spacing between text and cards
+                ProjectCards(), // Renamed to use proper PascalCase
               ],
             ),
           ),
@@ -137,84 +168,25 @@ class _ProjectsState extends State<Projects> {
   }
 }
 
-// class ProjectMainDescription extends StatelessWidget {
-//   // by using simple rich text style
-//   const ProjectMainDescription({super.key});
-//
-//   // Base style is defined once
-//   static const TextStyle _baseStyle = TextStyle(
-//     fontSize: 35,
-//     fontFamily: 'Poppins',
-//     fontWeight: FontWeight.w400,
-//     height: 1.2,
-//     color: Colors.black,
-//   );
-//
-//   // Bold style is defined once
-//   static const TextStyle _boldStyle = TextStyle(
-//     fontSize: 35,
-//     fontFamily: 'Poppins',
-//     fontWeight: FontWeight.w700, // The key difference
-//     height: 1.2,
-//     color: Colors.black,
-//   );
-//
-//   // Helper function to create a bold TextSpan (optional, but saves characters)
-//   TextSpan _b(String text) => TextSpan(text: text, style: _boldStyle);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-//       child: RichText(
-//         text: TextSpan(
-//           style: _baseStyle,
-//           children: <TextSpan>[
-//             const TextSpan(text: "I design with "),
-//             _b("intention"),
-//             const TextSpan(text: " not noice. I don't chase "),
-//             _b("Dribbble"),
-//             const TextSpan(text: " likes or design "),
-//             _b("Twitter hype. "),
-//             const TextSpan(text: "I care about "),
-//             _b("clarity, "),
-//             _b("speed,"),
-//             const TextSpan(text: " and building things that "),
-//             _b("actually ship. "),
-//             const TextSpan(text: "I make "),
-//             _b("systems"),
-//             const TextSpan(text: " that scale, "),
-//             _b("flows that "),
-//             _b("convert,"),
-//             const TextSpan(text: " and work that makes "),
-//             _b("noise."),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
+// ===========================================
+// PROJECT MAIN DESCRIPTION WIDGET
+// ===========================================
 class ProjectMainDescription extends StatelessWidget {
-  // by using easy rich text pattern package
   const ProjectMainDescription({super.key});
 
-  // 1. Define the full text as a single constant string
   static const String fullText =
-      "I design with intention not noice. I don't chase Dribbble likes or design Twitter hype. I care about clarity, speed and building things that actually ship. I make systems that scale, flows that convert and work that makes noise.";
+      "I develop applications based on exact requirements, carefully handling all possible scenarios. I deliver solutions efficiently while maintaining high-quality standards, follow timelines strictly, and ensure the code is clean, maintainable, and scalable. I focus on building apps that perform well, are easy to extend, and provide real value to users, while collaborating effectively with teams to ship features that work in the real world.";
 
-  // Define the base style once
   static const TextStyle _baseStyle = TextStyle(
-    fontSize: 27,
+    fontSize: 20,
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w400,
     height: 1.2,
     color: Colors.black,
   );
 
-  // Define the bold style once
   static const TextStyle _boldStyle = TextStyle(
-    fontSize: 27,
+    fontSize: 20,
     fontFamily: 'Poppins',
     fontWeight: FontWeight.w700,
     height: 1.2,
@@ -223,35 +195,41 @@ class ProjectMainDescription extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 2. Define a list of all words that should be BOLD
-    final List<String> boldWords = [
-      'intention',
-      'Dribbble',
-      'Twitter hype', // Note: You can style phrases too!
-      'clarity',
-      'speed',
-      'actually ship',
-      'systems',
-      'flows',
-      'convert',
-      'noise',
+    final List<String> boldPhrases = [
+      'exact requirements',
+      'carefully handling all possible scenarios',
+      'deliver solutions efficiently',
+      'high-quality standards',
+      'follow timelines strictly',
+      'clean',
+      'maintainable',
+      'scalable',
+      'perform well',
+      'easy to extend',
+      'real value',
+      'collaborating effectively',
+      'ship features',
+      'work in the real world',
     ];
+
+    String targetPattern = boldPhrases.map((phrase) {
+      String escapedPhrase = phrase.replaceAllMapped(
+          RegExp(r'([.+*?^$(){}|[\]\\])'),
+              (match) => r'\' + match.group(0)!
+      );
+      return '($escapedPhrase)';
+    }).join('|');
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: EasyRichText(
-        fullText, // Pass the single string
-        defaultStyle: _baseStyle, // Apply the base style
-        // 3. Define the pattern that finds all boldWords and applies _boldStyle
+        fullText,
+        defaultStyle: _baseStyle,
         patternList: [
           EasyRichTextPattern(
-            targetString: boldWords.join(
-              '|',
-            ), // Join all words with '|' for a Regex OR condition
+            targetString: targetPattern,
             style: _boldStyle,
-            // Use word boundaries to ensure 'speed' is matched but not 'speedy'
-            matchWordBoundaries:
-                false, // Set to false to allow partial matches like 'Twitter hype'
+            matchWordBoundaries: false,
           ),
         ],
       ),
@@ -259,145 +237,152 @@ class ProjectMainDescription extends StatelessWidget {
   }
 }
 
-class projectCards extends StatefulWidget {
-  const projectCards({super.key});
+// ===========================================
+// PROJECT CARDS WIDGET - USING responsive_grid_list
+// ===========================================
+class ProjectCards extends StatelessWidget {
+  const ProjectCards({super.key});
 
-  @override
-  State<projectCards> createState() => _projectCardsState();
-}
-
-class _projectCardsState extends State<projectCards> {
-  // Helper method to determine the number of columns based on screen width
-  int _getCrossAxisCount(double screenWidth) {
-    if (screenWidth < 600) {
-      return 1; // 1 column for phones
-    }
-    // else if (screenWidth < 900) {
-    //   return 2; // 2 columns for tablets
-    // }
-    else {
-      return 2; // 3 columns for desktop/large screens
-    }
-  }
-
-  // Helper method to create a single Card widget
+  // Helper method to create a single Card widget, simplified for the grid
   Widget _buildProjectCard(BuildContext context, Project project) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    int getFlex(double width) {
-      if (width < 600) return 3; // Mobile
-      if (width < 800) return 4; // Tablet
-      if (width < 1200) return 3;
-      return 1; // Desktop
-    }
-
+    // The InkWell wraps the entire card area and makes it tappable
     return InkWell(
       onTap: () {
         // Handle tap, e.g., navigate to details page
         Navigator.pushNamed(context, project.detailsRoute);
       },
-      // child: Card(
-      //   elevation: 8.0,
-      //   shape: RoundedRectangleBorder(
-      //     borderRadius: BorderRadius.circular(10.0),
-      //   ),
-      //   clipBehavior:
-      //       Clip.antiAlias, // Ensures content is clipped to border radius
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          // 1. Image Section
-          Expanded(
-            flex: 3,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12), // All 4 corners rounded
-              child: Image.asset(
-                project.imagePath,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: Colors.grey[200],
-                    child: const Center(
-                      child: Icon(
-                        Icons.broken_image,
-                        size: 50,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  );
-                },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        // Column stacks the Image and Text content
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            // 1. Image Section (Takes a fixed proportion of the card)
+            Flexible(
+              flex: 5, // Give the image more weight/height
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                ),
+                child: AspectRatio(
+                  aspectRatio: 16 / 9, // Image width:height ratio (e.g., 16:9)
+                  // --- KEY CHANGE: Image.network for external URLs ---
+                  child: Image.network(
+                    project.imagePath,
+                    fit: BoxFit.cover,
+                    // Show a progress indicator while loading
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        color: Colors.grey[200],
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
+                        ),
+                      );
+                    },
+                    // Show a broken image icon on error
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[200],
+                        child: const Center(
+                          child: Icon(
+                            Icons.broken_image,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  // --------------------------------------------------
+                ),
               ),
             ),
-          ),
 
-          // 2. Project Name and Description Section
-          Expanded(
-            flex: getFlex(screenWidth),
-            // child: Padding(
-            // padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                // Project Name (Title)
-                Text(
-                  project.title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w700,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 8),
+            // 2. Project Name and Description Section (Text Content)
+            Flexible(
+              flex: 3, // Less weight for the text content
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min, // Essential for content-based height
+                  children: <Widget>[
+                    // Project Name (Title)
+                    Text(
+                      project.title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w700,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
 
-                // Project Description
-                Text(
-                  project.description,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                    color: Colors.grey[700],
-                  ),
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
+                    // Project Description
+                    Text(
+                      project.description,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey[700],
+                      ),
+                      maxLines: 2, // Limit description height
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-            // ),
-          ),
-        ],
+          ],
+        ),
       ),
-      // ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final crossAxisCount = _getCrossAxisCount(screenWidth);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      // GridView.builder for a responsive, scrollable list of cards
-      child: GridView.builder(
-        // Important: ShrinkWrap true and disable scrolling because the outer ListView handles it
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: projects.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: crossAxisCount,
-          // Number of columns changes with screen size
-          crossAxisSpacing: 20.0,
-          // Horizontal space between cards
-          mainAxisSpacing: 20.0,
-          // Vertical space between cards
-          childAspectRatio: 0.8,
-          // Aspect ratio (width/height) of each item. Tune this for card height.
+      // --- KEY CHANGE: Using ResponsiveGridList ---
+      child: ResponsiveGridList(
+        // Ensure the grid takes only the vertical space it needs and relies on the parent's scroll.
+        listViewBuilderOptions:  ListViewBuilderOptions(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
         ),
-        itemBuilder: (context, index) {
-          return _buildProjectCard(context, projects[index]);
-        },
+        // Define the minimum width of an item.
+        minItemWidth: 350,
+
+        // Define the spacing between the cards
+        horizontalGridSpacing: 25,
+        verticalGridSpacing: 25,
+
+        // Generate the list of project cards
+        children: projects.map((project) {
+          return _buildProjectCard(context, project);
+        }).toList(),
       ),
     );
   }
